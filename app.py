@@ -1,6 +1,10 @@
 import streamlit as st
 import pandas as pd
 import os
+
+# Load the secret variables from the .env file
+load_dotenv()
+
 from langchain_google_genai import GoogleGenerativeAIEmbeddings, ChatGoogleGenerativeAI
 from langchain_core.documents import Document
 from langchain_community.vectorstores import Chroma
