@@ -8,7 +8,6 @@ from langchain_community.vectorstores import Chroma
 # --- Configuration & Initialization ---
 st.set_page_config(page_title="Internal Talent Radar", layout="wide")
 
-os.environ["GOOGLE_API_KEY"] = "AIzaSyCx-ZZw-vj14Vs2G-XT1C_byioX6akwaYs"
 
 # Ensure API key is set
 if "GOOGLE_API_KEY" not in os.environ:
