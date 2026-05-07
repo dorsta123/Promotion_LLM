@@ -8,7 +8,7 @@ from langchain_community.vectorstores import Chroma
 # --- Configuration & Initialization ---
 st.set_page_config(page_title="Internal Talent Radar", layout="wide")
 
-os.environ["GOOGLE_API_KEY"] = ""
+os.environ["GOOGLE_API_KEY"] = "AIzaSyCx-ZZw-vj14Vs2G-XT1C_byioX6akwaYs"
 
 # Ensure API key is set
 if "GOOGLE_API_KEY" not in os.environ:
@@ -18,7 +18,7 @@ if "GOOGLE_API_KEY" not in os.environ:
 # Initialize Gemini Models
 @st.cache_resource
 def load_models():
-    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+    embeddings = GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001")
     llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash", temperature=0.2)
     return embeddings, llm
 
