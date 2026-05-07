@@ -1,6 +1,11 @@
 import streamlit as st
 import pandas as pd
 import os
+from dotenv import load_dotenv
+
+# Load the secret variables from the .env file
+load_dotenv()
+
 from langchain_google_genai import GoogleGenerativeAIEmbeddings, ChatGoogleGenerativeAI
 from langchain_core.documents import Document
 from langchain_community.vectorstores import Chroma
@@ -18,7 +23,7 @@ if "GOOGLE_API_KEY" not in os.environ:
 @st.cache_resource
 def load_models():
     embeddings = GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001")
-    llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash", temperature=0.2)
+    llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.2)
     return embeddings, llm
 
 embeddings, llm = load_models()
