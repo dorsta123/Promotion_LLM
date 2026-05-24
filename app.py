@@ -6,24 +6,40 @@ from dotenv import load_dotenv
 # Load the secret variables from the .env file
 load_dotenv()
 
-from langchain_google_genai import GoogleGenerativeAIEmbeddings, ChatGoogleGenerativeAI
+from langchain_google_vertexai import VertexAIEmbeddings, ChatVertexAI
 from langchain_core.documents import Document
 from langchain_community.vectorstores import Chroma
 
 # --- Configuration & Initialization ---
 st.set_page_config(page_title="Internal Talent Radar", layout="wide")
 
-
-# Ensure API key is set
-if "GOOGLE_API_KEY" not in os.environ:
-    st.error("Please set the GOOGLE_API_KEY environment variable.")
+# Ensure Service Account JSON key is set in the environment
+if "GOOGLE_APPLICATION_CREDENTIALS" not in os.environ:
+    st.error("Please set the GOOGLE_APPLICATION_CREDENTIALS in your .env file.")
     st.stop()
 
-# Initialize Gemini Models
 @st.cache_resource
 def load_models():
-    embeddings = GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001")
-    llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", temperature=0.2)
+    # Pull the project ID from your .env
+    project_id = os.environ.get("GCP_PROJECT_ID") 
+    
+    if not project_id:
+        st.error("Please set GCP_PROJECT_ID in your .env file.")
+        st.stop()
+
+    # Initialize Embeddings - LangChain automatically uses the JSON key from the environment
+    embeddings = VertexAIEmbeddings(
+        model_name="text-embedding-004",
+        project=project_id
+    )
+    
+    # Initialize LLM - LangChain automatically uses the JSON key from the environment
+    llm = ChatVertexAI(
+        model_name="gemini-2.5-flash",
+        temperature=0.2,
+        project=project_id
+    )
+    
     return embeddings, llm
 
 embeddings, llm = load_models()
@@ -71,7 +87,7 @@ else:
         if job_description.strip():
             with st.spinner("Analyzing internal work patterns..."):
                 # RAG Step 1: Retrieve top 3 relevant documents based on semantic similarity
-                retriever = vector_store.as_retriever(search_kwargs={"k": 3})
+                retriever = vector_store.as_retriever(search_kwargs={"k": 5})
                 results = retriever.invoke(job_description)
                 
                 if not results:
